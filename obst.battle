@@ -1,0 +1,9 @@
+#Battle Properties
+robocode.battleField.width=1000
+robocode.battleField.height=1000
+robocode.battle.numRounds=1
+robocode.battle.gunCoolingRate=0.1
+robocode.battle.rules.inactivityTime=45000
+robocode.battle.selectedRobots=sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,sample.SittingDuck,YourRobot*
+
+robocode.battle.initialPositions=(100,350,0),(250,100,0),(500,500,0),(500,550,0),(550,550,0),(600,550,0),(700,400,0),(700,450,0),(700,500,0),(800,100,0),(150,850,0),(150,800,0),(200,800,0),(250,800,0),(300,800,0),(300,750,0),(300,700,0),(300,650,0),(350,800,0),(400,800,0),(450,800,0),(600,800,0),(650,800,0),(700,800,0),(750,800,0),(800,800,0),(850,800,0),(850,850,0),(850,900,0),(500,900,0)
