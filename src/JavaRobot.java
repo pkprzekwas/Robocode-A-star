@@ -11,6 +11,7 @@ import robocode.util.Utils;
 
 public class JavaRobot extends AdvancedRobot {
 
+    private static final int CellSize = 40;
     boolean isBlocked;
     private State state;
     private int oppMap[][][];
@@ -21,13 +22,17 @@ public class JavaRobot extends AdvancedRobot {
     private int columns;
     private int height;
     private int width;
-    private Vector<Point> coordList;
+    private Vector<Point> cordList;
+    int tar = 3;
 
     private int destinationX = 900;
     private int destinationY = 900;
 
     public JavaRobot() {}
 
+    /**
+     * Main loop of battle.
+     */
     public void run() {
         setUpValues();
 
@@ -56,7 +61,7 @@ public class JavaRobot extends AdvancedRobot {
      */
     private void setUpValues(){
         state = State.MAP_RECOGNITION;
-        coordList = new Vector<>();
+        cordList = new Vector<>();
         rows = (int) (getBattleFieldHeight() / 40);
         columns = (int) (getBattleFieldWidth() / 40);
         height = (int)getHeight();
@@ -76,7 +81,7 @@ public class JavaRobot extends AdvancedRobot {
         for(int i=0; i<25; i++)
             for(int j=0; j<25; j++)
             {
-                for(Point x: coordList){
+                for(Point x: cordList){
                     int d = getDistanceBetween2P((int)x.getX(),(int)x.getY(),oppMap[i][j][0]+20,oppMap[i][j][1]+20);
                     if (d<40) {
                         oppMap[i][j][2] = 1;
@@ -93,6 +98,17 @@ public class JavaRobot extends AdvancedRobot {
      * Path find implemented using A star algorithm.
      */
     public void findPath(){
+        if (tar == 3){
+            goTo(getCellCenter(10,16).x, getCellCenter(10,16).y);
+            execute();
+            waitFor(new MoveCompleteCondition(this));
+            tar++;
+        }
+        if (tar == 4){
+            goTo(getCellCenter(10,16).x, getCellCenter(10,16).y);
+            execute();
+            waitFor(new MoveCompleteCondition(this));
+        }
 
     }
 
@@ -101,7 +117,7 @@ public class JavaRobot extends AdvancedRobot {
      * @param x cord of destination point
      * @param y cord of destination point
      */
-    private void goTo(double x, double y) {
+    private void goTo(int x, int y) {
 	/* Transform our coordinates into a vector */
         x -= getX();
         y -= getY();
@@ -138,6 +154,22 @@ public class JavaRobot extends AdvancedRobot {
     }
 
     /**
+     * Returns cell of which most of robot's area covers.
+     * @return Point(x cord of cell, y cord of cell)
+     */
+    public Point getMyCurrentCell(){
+        return new Point((int)getX()/CellSize, (int)getY()/CellSize);
+    }
+
+    /**
+     * Returns center of cell with given A and B
+     * @return Point(x cord of cell center, y cord of cell center)
+     */
+    public Point getCellCenter(int a, int b){
+        return new Point(oppMap[10][16][0]+20,oppMap[10][16][1]+20);
+    }
+
+    /**
      * Shows values for debugging process
      * @param g graphics handler
      */
@@ -150,6 +182,8 @@ public class JavaRobot extends AdvancedRobot {
                 + String.valueOf(getY()), 50, (int)getBattleFieldHeight()-70);
         g.drawString("STATE: "
                 + String.valueOf(state.toString()), 50, (int)getBattleFieldHeight()-90);
+        g.drawString("TAR: "
+                + String.valueOf(tar), 50, (int)getBattleFieldHeight()-110);
     }
 
     /**
@@ -168,21 +202,21 @@ public class JavaRobot extends AdvancedRobot {
 
     /**
      * Fills cells with proper color:
-     * - red occupied
-     * - blue free
-     * - green visited
+     * - blue free (0)
+     * - red occupied (1)
+     * - green visited (2)
      * @param g graphics handler
      */
     private void showCellsStatus(Graphics2D g){
         for(int i=0; i<25; i++)
             for(int j=0; j<25; j++)
             {
+                if (oppMap[i][j][2] == 0) {
+                g.setColor(new Color(66, 50, 255, 0x80));
+                g.fillRect(oppMap[i][j][0], oppMap[i][j][1], 40, 40);
+                }
                 if (oppMap[i][j][2] == 1) {
                     g.setColor(new Color(255, 1, 0x00, 0x80));
-                    g.fillRect(oppMap[i][j][0], oppMap[i][j][1], 40, 40);
-                }
-                if (oppMap[i][j][2] == 0) {
-                    g.setColor(new Color(66, 50, 255, 0x80));
                     g.fillRect(oppMap[i][j][0], oppMap[i][j][1], 40, 40);
                 }
                 if (oppMap[i][j][2] == 2) {
@@ -193,7 +227,10 @@ public class JavaRobot extends AdvancedRobot {
     }
 
     private void showNeighCells(Graphics2D g){
-
+        g.setColor(new Color(70, 255, 54, 0x80));
+        int i = getMyCurrentCell().x;
+        int j = getMyCurrentCell().y;
+        g.fillRect(oppMap[i][j][0], oppMap[i][j][1], 40, 40);
     }
 
     @Override
@@ -214,8 +251,8 @@ public class JavaRobot extends AdvancedRobot {
         Double coordX = getX() + d * Math.sin(angle);
         Double coordY = getY() + d * Math.cos(angle);
         point.setLocation(coordX.intValue(), coordY.intValue());
-        if (!coordList.contains(point))
-            coordList.add(point);
+        if (!cordList.contains(point))
+            cordList.add(point);
     }
 
     /**
