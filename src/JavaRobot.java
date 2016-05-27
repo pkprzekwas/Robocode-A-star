@@ -11,10 +11,10 @@ import robocode.util.Utils;
 
 public class JavaRobot extends AdvancedRobot {
 
-    private static final int CellSize = 40;
+    private Commons c = new Commons(this);
     boolean isBlocked;
     private State state;
-    private int oppMap[][][];
+    public int oppMap[][][];
     private ArrayList<Integer[]> oppList;
     private ArrayList<int[]> openList;
     private ArrayList<int[]> closeList;
@@ -23,7 +23,6 @@ public class JavaRobot extends AdvancedRobot {
     private int height;
     private int width;
     private Vector<Point> cordList;
-    int tar = 3;
 
     private int destinationX = 900;
     private int destinationY = 900;
@@ -82,7 +81,7 @@ public class JavaRobot extends AdvancedRobot {
             for(int j=0; j<25; j++)
             {
                 for(Point x: cordList){
-                    int d = getDistanceBetween2P((int)x.getX(),(int)x.getY(),oppMap[i][j][0]+20,oppMap[i][j][1]+20);
+                    int d = c.getDistanceBetween2P((int)x.getX(),(int)x.getY(),oppMap[i][j][0]+20,oppMap[i][j][1]+20);
                     if (d<40) {
                         oppMap[i][j][2] = 1;
                     }
@@ -98,75 +97,20 @@ public class JavaRobot extends AdvancedRobot {
      * Path find implemented using A star algorithm.
      */
     public void findPath(){
-        if (tar == 3){
-            goTo(getCellCenter(10,16).x, getCellCenter(10,16).y);
-            execute();
-            waitFor(new MoveCompleteCondition(this));
-            tar++;
-        }
-        if (tar == 4){
-            goTo(getCellCenter(10,16).x, getCellCenter(10,16).y);
-            execute();
-            waitFor(new MoveCompleteCondition(this));
-        }
 
-    }
 
-    /**
-     * Moves our robot to the given position.
-     * @param x cord of destination point
-     * @param y cord of destination point
-     */
-    private void goTo(int x, int y) {
-	/* Transform our coordinates into a vector */
-        x -= getX();
-        y -= getY();
-	/* Calculate the angle to the target position */
-        double angleToTarget = Math.atan2(x, y);
-	/* Calculate the turn required get there */
-        double targetAngle = Utils.normalRelativeAngle(angleToTarget - getHeadingRadians());
-	/*
-	 * The Java Hypot method is a quick way of getting the length
-	 * of a vector. Which in this case is also the distance between
-	 * our robot and the target location.
-	 */
-        double distance = Math.hypot(x, y);
-	/* This is a simple method of performing set front as back */
-        double turnAngle = Math.atan(Math.tan(targetAngle));
-        setTurnRightRadians(turnAngle);
-        if(targetAngle == turnAngle) {
-            setAhead(distance);
-        } else {
-            setBack(distance);
-        }
-    }
+        c.goTo(c.getCellCenter(4,4).x, c.getCellCenter(4,4).y);
+        execute();
+        waitFor(new MoveCompleteCondition(this));
 
-    /**
-     * Returns distance between two points of two dimensional platform.
-     * @param x1 of first point
-     * @param y1 of first point
-     * @param x2 of second point
-     * @param x2 of second point
-     * @return Distance between two point as integer build in type
-     */
-    public int getDistanceBetween2P(int x1, int y1, int x2, int y2){
-        return (int)Math.hypot(Math.abs(x2-x1), (Math.abs(y2-y1)));
-    }
+        c.goTo(c.getCellCenter(5,5).x, c.getCellCenter(5,5).y);
+        execute();
+        waitFor(new MoveCompleteCondition(this));
 
-    /**
-     * Returns cell of which most of robot's area covers.
-     * @return Point(x cord of cell, y cord of cell)
-     */
-    public Point getMyCurrentCell(){
-        return new Point((int)getX()/CellSize, (int)getY()/CellSize);
-    }
+        c.goTo(c.getCellCenter(10,16).x, c.getCellCenter(10,16).y);
+        execute();
+        waitFor(new MoveCompleteCondition(this));
 
-    /**
-     * Returns center of cell with given A and B
-     * @return Point(x cord of cell center, y cord of cell center)
-     */
-    public Point getCellCenter(int a, int b){
-        return new Point(oppMap[10][16][0]+20,oppMap[10][16][1]+20);
     }
 
     /**
@@ -182,8 +126,6 @@ public class JavaRobot extends AdvancedRobot {
                 + String.valueOf(getY()), 50, (int)getBattleFieldHeight()-70);
         g.drawString("STATE: "
                 + String.valueOf(state.toString()), 50, (int)getBattleFieldHeight()-90);
-        g.drawString("TAR: "
-                + String.valueOf(tar), 50, (int)getBattleFieldHeight()-110);
     }
 
     /**
@@ -228,9 +170,25 @@ public class JavaRobot extends AdvancedRobot {
 
     private void showNeighCells(Graphics2D g){
         g.setColor(new Color(70, 255, 54, 0x80));
-        int i = getMyCurrentCell().x;
-        int j = getMyCurrentCell().y;
+        int i = c.getMyCurrentCell().x;
+        int j = c.getMyCurrentCell().y;
         g.fillRect(oppMap[i][j][0], oppMap[i][j][1], 40, 40);
+        if (i<25 && j<25)
+            g.fillRect(oppMap[i+1][j+1][0], oppMap[i+1][j+1][1], 40, 40);
+        if (i>0 && j>0)
+            g.fillRect(oppMap[i-1][j-1][0], oppMap[i-1][j-1][1], 40, 40);
+        if (i<25)
+            g.fillRect(oppMap[i+1][j][0], oppMap[i+1][j][1], 40, 40);
+        if (i>0)
+            g.fillRect(oppMap[i-1][j][0], oppMap[i-1][j][1], 40, 40);
+        if (j<25)
+            g.fillRect(oppMap[i][j+1][0], oppMap[i][j+1][1], 40, 40);
+        if (j>0)
+            g.fillRect(oppMap[i][j-1][0], oppMap[i][j-1][1], 40, 40);
+        if (i<25 && j>0)
+            g.fillRect(oppMap[i+1][j-1][0], oppMap[i+1][j-1][1], 40, 40);
+        if (i>0 && j<25)
+            g.fillRect(oppMap[i-1][j+1][0], oppMap[i-1][j+1][1], 40, 40);
     }
 
     @Override
