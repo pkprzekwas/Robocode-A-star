@@ -22,8 +22,8 @@ public class Commons {
      * @param x2 of second point
      * @return Distance between two point as integer build in type
      */
-    public int getDistanceBetween2P(int x1, int y1, int x2, int y2){
-        return (int)Math.hypot(Math.abs(x2-x1), (Math.abs(y2-y1)));
+    public Integer getDistanceBetween2P(int x1, int y1, int x2, int y2){
+        return new Integer((int)Math.hypot(Math.abs(x2-x1), (Math.abs(y2-y1))));
     }
 
     /**
@@ -31,7 +31,7 @@ public class Commons {
      * @param x cord of destination point
      * @param y cord of destination point
      */
-    public void goTo(int x, int y) {
+    public void goTo(double x, double y) {
 	/* Transform our coordinates into a vector */
         x -= robot.getX();
         y -= robot.getY();

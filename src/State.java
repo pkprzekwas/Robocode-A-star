@@ -3,7 +3,8 @@
  */
 public enum State {
     MAP_RECOGNITION("Map recognition..."),
-    ANALYZE("Analysing...");
+    ANALYZE("Analysing..."),
+    END("END");
 
     private final String text;
 
