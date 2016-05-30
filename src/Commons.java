@@ -68,6 +68,6 @@ public class Commons {
      * @return Point(x cord of cell center, y cord of cell center)
      */
     public Point getCellCenter(int a, int b){
-        return new Point(robot.oppMap[a][b][0]+20,robot.oppMap[a][b][1]+20);
+        return new Point(robot.mainMap[a][b][0]+20,robot.mainMap[a][b][1]+20);
     }
 }
